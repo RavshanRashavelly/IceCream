@@ -6,11 +6,11 @@ public class Isecreamhold : MonoBehaviour
 {
     public bool hold;
     public float distance;
-    RaycastHit2D hit;
     public Transform holdPoint;
     public float throwObj;
+    public GameObject iceCream;
 
-    
+
     void Start()
     {
 
@@ -18,63 +18,34 @@ public class Isecreamhold : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (hold && iceCream != null)
         {
-            if (!hold)
+            iceCream.transform.position = holdPoint.transform.position;
+        }
+        else if (!hold && iceCream != null)
+        {
+            iceCream.transform.position = iceCream.transform.position;
+        }
+        if (Input.GetKeyDown(KeyCode.E) && iceCream != null)
+        {
+            if (!hold && Vector2.Distance(holdPoint.transform.position, iceCream.transform.position) < distance && iceCream.CompareTag("Truff"))
             {
-                Physics2D.queriesStartInColliders = false; //Игнорирование коллайдера перса
-
-                if (Input.GetAxis("Horizontal") >= 0)
-                {
-                    hit = Physics2D.Raycast(transform.position, Vector2.right * transform.localScale.x, distance);
-                }
-                
-                if (Input.GetAxis("Horizontal") <= 0)
-                {
-                    hit = Physics2D.Raycast(transform.position, Vector2.left * transform.localScale.x, distance);
-                }
-                
-
-                if (hit.collider != null && hit.collider.tag == "Truff")
-                {
-                    hold = true;
-                }
+                hold = true;
             }
-            //else
-            //{
-            //    hold = false;
-            //    if (hit.collider.gameObject.GetComponent<Rigidbody2D>() != null)
-            //    {
-            //        hit.collider.gameObject.transform.position = putPoint.position;
-            //    }
-            //}
-
-            else
+            else if (hold)
             {
                 hold = false;
-                if (hit.collider.gameObject.GetComponent<Rigidbody2D>() != null)
-                {
-                    hit.collider.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(transform.localScale.x, 1) * throwObj;
-                }
             }
 
         }
-        if (hold)
-        {
-            hit.collider.gameObject.transform.position = holdPoint.position;
-        }
-
-        Vector3 forward = transform.TransformDirection(Vector3.forward) * 5;
-        Debug.DrawRay(transform.position, forward, Color.green);
     }
 
-    private void OnDrawGizmos()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * transform.localScale.x * distance);
-
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.left * transform.localScale.x * distance);
-
+        if (other.CompareTag("Truff")) iceCream = other.gameObject;
     }
-}    
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Truff")) iceCream = null;
+    }
+}
