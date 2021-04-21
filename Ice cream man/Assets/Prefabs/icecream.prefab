@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4018800371160605283}
   - component: {fileID: 4018800371160605280}
   - component: {fileID: 4018800371160605281}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: icecream
   m_TagString: Truff
   m_Icon: {fileID: 0}
